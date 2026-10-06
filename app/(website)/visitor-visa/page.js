@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useLanguage } from "../../context/LanguageContext";
-import { db } from "../../services/db";
+import { useLanguage } from "@/context/LanguageContext";
+import { db } from "@/services/db";
 import { Plane, Users, Building, ShieldCheck, Clock, FileText, Send, Sparkles } from "lucide-react";
 
 export default function VisitorVisaPage() {
@@ -28,6 +28,19 @@ export default function VisitorVisaPage() {
       score: `Inquiry details: ${formData.message}`,
       status: "New"
     });
+
+    // Send to WhatsApp
+    const waMsg =
+      `✈️ *Visitor Visa Inquiry — IQ Education*\n\n` +
+      `👤 *Name:* ${formData.name}\n` +
+      `📞 *Phone:* ${formData.phone}\n` +
+      `📧 *Email:* ${formData.email}\n` +
+      `🌍 *Destination:* ${formData.country}\n` +
+      `🎫 *Visa Type:* ${activeTab.toUpperCase()}\n` +
+      `💬 *Message:* ${formData.message}\n\n` +
+      `_Sent via IQ Education Visitor Visa Page_`;
+    window.open(`https://wa.me/918799072887?text=${encodeURIComponent(waMsg)}`, "_blank");
+
     setFormData({ name: "", email: "", phone: "", country: "Canada", message: "" });
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);

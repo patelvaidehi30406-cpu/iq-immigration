@@ -50,7 +50,7 @@ export default function LiveChat() {
       } else if (text.includes("visitor") || text.includes("tourist") || text.includes("family")) {
         botText = "We process Tourist and Family Visit visas with high success rates. Drop us your contact info in the chat and our visitor visa desk will call you!";
       } else if (text.includes("admin") || text.includes("dashboard") || text.includes("crm")) {
-        botText = "You can access the simulated Admin Dashboard by clicking the user profile icon in the top navigation bar to manage leads!";
+        botText = "Our administration team uses a dedicated CRM to track all requests. Please submit a form and they will get back to you.";
       } else {
         botText = "Thanks for sharing! I have logged your query. Our visa counselors will reach out to you on phone/email shortly. Please schedule a free consultation if you'd like an immediate slot.";
       }

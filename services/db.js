@@ -187,36 +187,55 @@ export const db = {
   },
 
   // LEADS
-  getLeads() {
-    this.init();
-    return getStorageItem("iq_leads", defaultLeads);
+  getLeads: async function() {
+    if (!isClient) return [];
+    try {
+      const res = await fetch('/api/leads');
+      const data = await res.json();
+      if (data.success) return data.leads;
+      return [];
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
   },
 
-  addLead(lead) {
-    const leads = this.getLeads();
-    const newLead = {
-      id: "lead-" + Date.now(),
-      date: new Date().toISOString(),
-      status: "New",
-      ...lead
-    };
-    leads.unshift(newLead);
-    setStorageItem("iq_leads", leads);
-    
-    // Automatically setup a mock visa tracking case for this lead if it is approved
-    return newLead;
+  addLead: async function(lead) {
+    if (!isClient) return;
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead)
+      });
+      return await res.json();
+    } catch (e) {
+      console.error(e);
+    }
   },
 
-  updateLeadStatus(id, status) {
-    const leads = this.getLeads();
-    const updated = leads.map(l => l.id === id ? { ...l, status } : l);
-    setStorageItem("iq_leads", updated);
+  updateLeadStatus: async function(id, status) {
+    if (!isClient) return;
+    try {
+      await fetch('/api/leads', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
+      });
+    } catch (e) {
+      console.error(e);
+    }
   },
 
-  deleteLead(id) {
-    const leads = this.getLeads();
-    const filtered = leads.filter(l => l.id !== id);
-    setStorageItem("iq_leads", filtered);
+  deleteLead: async function(id) {
+    if (!isClient) return;
+    try {
+      await fetch(`/api/leads?id=${id}`, {
+        method: 'DELETE'
+      });
+    } catch (e) {
+      console.error(e);
+    }
   },
 
   // APPOINTMENTS

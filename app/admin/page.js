@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { db } from "../../services/db";
+import { db } from "@/services/db";
 import { 
   Users, Calendar, FileText, Compass, LogOut, 
   Trash2, Check, X, ShieldAlert, ArrowRight, PlusCircle, Search
@@ -41,8 +41,8 @@ export default function AdminDashboard() {
   });
 
   // Load Database
-  const loadDb = () => {
-    setLeads(db.getLeads());
+  const loadDb = async () => {
+    setLeads(await db.getLeads());
     setAppointments(db.getAppointments());
     setDocuments(db.getDocuments());
     setTracking(db.getTracking());
@@ -85,17 +85,17 @@ export default function AdminDashboard() {
   };
 
   // Lead Actions
-  const handleLeadDelete = (id) => {
+  const handleLeadDelete = async (id) => {
     if (confirm("Are you sure you want to delete this lead?")) {
-      db.deleteLead(id);
-      loadDb();
+      await db.deleteLead(id);
+      await loadDb();
       triggerToast("Lead successfully deleted.");
     }
   };
 
-  const handleLeadStatus = (id, status) => {
-    db.updateLeadStatus(id, status);
-    loadDb();
+  const handleLeadStatus = async (id, status) => {
+    await db.updateLeadStatus(id, status);
+    await loadDb();
     triggerToast(`Lead status updated to ${status}.`);
   };
 

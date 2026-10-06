@@ -1,10 +1,12 @@
 import { Inter, Outfit } from "next/font/google";
-import "./globals.css";
-import { LanguageProvider } from "../context/LanguageContext";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import FloatingWhatsApp from "../components/FloatingWhatsApp";
-import LiveChat from "../components/LiveChat";
+import "../globals.css";
+import { LanguageProvider } from "@/context/LanguageContext";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import LiveChat from "@/components/LiveChat";
+import AppShell from "@/components/AppShell";
+import RecentApprovalsTicker from "@/components/RecentApprovalsTicker";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,22 +36,27 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col bg-brand-gray text-brand-text">
         <LanguageProvider>
-          {/* Header Navigation */}
-          <Header />
-          
-          {/* Page Contents */}
-          <main className="flex-grow pt-[80px]">
-            {children}
-          </main>
-          
-          {/* Footer Branding */}
-          <Footer />
-          
-          {/* Sticky Conversion Widgets */}
-          <FloatingWhatsApp />
-          <LiveChat />
+          <AppShell>
+            <div className="fixed top-0 left-0 right-0 z-50">
+              <RecentApprovalsTicker />
+              <Header />
+            </div>
+            
+            {/* Page Contents */}
+            <main className="flex-grow pt-[100px]">
+              {children}
+            </main>
+            
+            {/* Footer Branding */}
+            <Footer />
+            
+            {/* Sticky Conversion Widgets */}
+            <FloatingWhatsApp />
+            <LiveChat />
+          </AppShell>
         </LanguageProvider>
       </body>
     </html>
   );
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { Star, ShieldCheck, Heart, Play, Eye, Filter } from "lucide-react";
 
 export default function SuccessStoriesPage() {

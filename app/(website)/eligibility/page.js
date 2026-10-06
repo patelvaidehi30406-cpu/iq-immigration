@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useLanguage } from "../../context/LanguageContext";
-import { db } from "../../services/db";
+import { useLanguage } from "@/context/LanguageContext";
+import { db } from "@/services/db";
 import { ShieldCheck, ArrowLeft, ArrowRight, CheckCircle, GraduationCap, Award, Compass, HeartHandshake } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -52,7 +52,7 @@ export default function EligibilityPage() {
       let scoreText = "";
       let rating = "Good"; // Good, Excellent, Moderate
       let detailDesc = "";
-      
+
       const band = parseFloat(formData.ielts);
       const exp = parseInt(formData.experience);
       const country = formData.preferredCountry;
@@ -129,6 +129,21 @@ export default function EligibilityPage() {
         status: "New"
       });
 
+      // Send to WhatsApp
+      const waMsg =
+        `🌟 *New Eligibility Check — IQ Education*\n\n` +
+        `👤 *Name:* ${formData.name}\n` +
+        `📞 *Phone:* ${formData.phone}\n` +
+        `📧 *Email:* ${formData.email}\n` +
+        `🌍 *Preferred Country:* ${formData.preferredCountry}\n` +
+        `🎓 *Education:* ${formData.education}\n` +
+        `📊 *IELTS Score:* ${formData.ielts}\n` +
+        `💼 *Work Experience:* ${formData.experience} years\n` +
+        `📅 *Age:* ${formData.age}\n` +
+        `✅ *Eligibility Result:* ${scoreText}\n\n` +
+        `_Sent via IQ Education Eligibility Checker_`;
+      window.open(`https://wa.me/918799072887?text=${encodeURIComponent(waMsg)}`, "_blank");
+
     }, 2000);
   };
 
@@ -164,18 +179,17 @@ export default function EligibilityPage() {
       {/* 2. Interactive Step Wizard Card */}
       <section className="max-w-xl mx-auto px-4 sm:px-6">
         <div className="glass-card p-6 sm:p-10 rounded-3xl bg-white border border-brand-blue-light/5 shadow-2xl relative overflow-hidden">
-          
+
           {/* Progress Indicators */}
           {result === null && (
             <div className="flex justify-between items-center mb-8 border-b border-brand-blue/5 pb-4">
               {[1, 2, 3].map((s) => (
                 <div key={s} className="flex items-center space-x-2">
                   <div
-                    className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                      step >= s
+                    className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step >= s
                         ? "bg-brand-blue text-brand-gold font-black border border-brand-gold"
                         : "bg-gray-100 text-gray-400"
-                    }`}
+                      }`}
                   >
                     {s}
                   </div>
@@ -228,7 +242,7 @@ export default function EligibilityPage() {
           ) : (
             // Form Steps
             <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
-              
+
               {/* Step 1: Personal Info */}
               {step === 1 && (
                 <div className="space-y-4 animate-in slide-in-from-right duration-250">

@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useLanguage } from "../../context/LanguageContext";
-import { db } from "../../services/db";
+import { useLanguage } from "@/context/LanguageContext";
+import { db } from "@/services/db";
 import { ShieldCheck, ClipboardCheck, Briefcase, FileUser, BadgeDollarSign, HelpCircle, Send, CheckCircle, Flame } from "lucide-react";
 
 export default function WorkPermitPage() {
@@ -46,6 +46,20 @@ export default function WorkPermitPage() {
         status: "New"
       });
       setLeadSaved(true);
+
+      // Send to WhatsApp
+      const waMsg =
+        `💼 *Work Permit Inquiry — IQ Education*\n\n` +
+        `👤 *Name:* ${formData.name}\n` +
+        `📞 *Phone:* ${formData.phone}\n` +
+        `📧 *Email:* ${formData.email}\n` +
+        `🛠️ *Job Title:* ${formData.jobTitle}\n` +
+        `📅 *Experience:* ${formData.experience} years\n` +
+        `📄 *ATS Score:* ${score}/100\n` +
+        `🧾 *Profile Summary:* ${formData.cvText.substring(0, 150)}\n\n` +
+        `_Sent via IQ Education Work Permit Page_`;
+      window.open(`https://wa.me/918799072887?text=${encodeURIComponent(waMsg)}`, "_blank");
+
     }, 2000);
   };
 

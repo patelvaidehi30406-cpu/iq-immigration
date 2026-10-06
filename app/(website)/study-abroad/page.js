@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useLanguage } from "../../context/LanguageContext";
-import { db } from "../../services/db";
-import { CheckCircle, Calendar, GraduationCap, DollarSign, Clock, FileText, Gift, Send, Sparkles } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { db } from "@/services/db";
+import { CheckCircle, Calendar, GraduationCap, DollarSign, Clock, FileText, Gift, Send, Sparkles, Briefcase, BookOpen, CalendarDays } from "lucide-react";
 
-export default function StudyAbroadPage() {
+function StudyAbroadContent() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("canada");
@@ -43,6 +43,20 @@ export default function StudyAbroadPage() {
       score: `Immediate Application for Study Permit in ${activeTab.toUpperCase()}`,
       status: "New"
     });
+
+    // Send to WhatsApp
+    const waMsg =
+      `🎓 *Study Abroad Application — IQ Education*\n\n` +
+      `👤 *Name:* ${formData.name}\n` +
+      `📞 *Phone:* ${formData.phone}\n` +
+      `📧 *Email:* ${formData.email}\n` +
+      `🌍 *Country:* ${activeTab.toUpperCase()}\n` +
+      `📊 *IELTS/PTE Score:* ${formData.ielts}\n` +
+      `📝 *Marks/GPA:* ${formData.gpa}%\n` +
+      `🏫 *Stream:* ${formData.stream}\n\n` +
+      `_Sent via IQ Education Study Abroad Page_`;
+    window.open(`https://wa.me/918799072887?text=${encodeURIComponent(waMsg)}`, "_blank");
+
     setFormData({ name: "", email: "", phone: "", ielts: "6.5", gpa: "", stream: "Engineering" });
     setApplied(true);
     setTimeout(() => {
@@ -55,10 +69,21 @@ export default function StudyAbroadPage() {
     canada: {
       name: "Canada",
       flag: "🇨🇦",
+      flagCode: "ca",
       eligibility: "60% or higher in High School (12th) or Bachelor's. IELTS: 6.0 in each band for SDS (Student Direct Stream), 5.5 for non-SDS. PTE: 60+ score.",
       fees: "$15,000 - $35,000 CAD per year.",
       living: "$20,635 CAD per year (Mandatory GIC blocked account deposit).",
-      universities: ["University of Toronto", "University of British Columbia (UBC)", "McGill University", "Seneca College", "Humber College", "Conestoga College"],
+      intakes: "September (Major), January, May",
+      postStudyWork: "Up to 3 years Post-Graduation Work Permit (PGWP)",
+      popularCourses: "IT & Computer Science, Engineering, Business Administration, Healthcare, Data Science",
+      universities: [
+        { name: "University of Toronto", url: "https://www.utoronto.ca/" },
+        { name: "University of British Columbia (UBC)", url: "https://www.ubc.ca/" },
+        { name: "McGill University", url: "https://www.mcgill.ca/" },
+        { name: "Seneca College", url: "https://www.senecapolytechnic.ca/" },
+        { name: "Humber College", url: "https://humber.ca/" },
+        { name: "Conestoga College", url: "https://www.conestogac.on.ca/" }
+      ],
       processingTime: "SDS pathway: 3 to 4 weeks. Non-SDS: 6 to 8 weeks.",
       documents: ["Letter of Acceptance (LOA)", "GIC Payment Receipt", "1-Year Tuition Receipt", "Statement of Purpose (SOP)", "Academic Transcripts & Certificates"],
       scholarships: ["Lester B. Pearson International Scholarship", "Ontario Graduate Scholarship", "University Entrance Awards (up to $5,000 CAD)"]
@@ -66,10 +91,21 @@ export default function StudyAbroadPage() {
     australia: {
       name: "Australia",
       flag: "🇦🇺",
+      flagCode: "au",
       eligibility: "65% academic score. IELTS: 6.5 overall (minimum 6.0 in each band) or PTE overall score of 58+. MOI waiver accepted in select universities.",
       fees: "$25,000 - $45,000 AUD per year.",
       living: "$29,710 AUD per year (Official financial proof limit).",
-      universities: ["University of Melbourne", "University of Sydney", "UNSW Sydney", "Monash University", "RMIT University", "Macquarie University"],
+      intakes: "February, July, November",
+      postStudyWork: "2 to 4 years Temporary Graduate Visa (subclass 485)",
+      popularCourses: "Nursing, Accounting, IT, Engineering, Social Work",
+      universities: [
+        { name: "University of Melbourne", url: "https://www.unimelb.edu.au/" },
+        { name: "University of Sydney", url: "https://www.sydney.edu.au/" },
+        { name: "UNSW Sydney", url: "https://www.unsw.edu.au/" },
+        { name: "Monash University", url: "https://www.monash.edu/" },
+        { name: "RMIT University", url: "https://www.rmit.edu.au/" },
+        { name: "Macquarie University", url: "https://www.mq.edu.au/" }
+      ],
       processingTime: "4 to 6 weeks.",
       documents: ["Confirmation of Enrollment (COE)", "Overseas Student Health Cover (OSHC)", "Genuine Student (GS) Statement", "6 Months Bank Statements", "Academic Transcripts"],
       scholarships: ["Destination Australia Scholarships", "Australian Government Research Training Program (RTP)", "Vice-Chancellor's International Scholarships"]
@@ -77,10 +113,21 @@ export default function StudyAbroadPage() {
     "united-kingdom": {
       name: "United Kingdom",
       flag: "🇬🇧",
+      flagCode: "gb",
       eligibility: "55% academic marks. IELTS: 6.0 overall (no band less than 5.5) or English 70% in 12th standard (medium of instruction waiver).",
       fees: "£12,000 - £28,000 GBP per year.",
       living: "£12,006 GBP (Outside London) or £15,600 GBP (Inside London) per year.",
-      universities: ["University of Oxford", "University College London (UCL)", "University of Manchester", "Coventry University", "University of Hertfordshire", "BPP University"],
+      intakes: "September (Major), January",
+      postStudyWork: "2 years Graduate Route visa (3 years for PhD)",
+      popularCourses: "Law, Business & Finance, Computer Science, Architecture, Medicine",
+      universities: [
+        { name: "University of Oxford", url: "https://www.ox.ac.uk/" },
+        { name: "University College London (UCL)", url: "https://www.ucl.ac.uk/" },
+        { name: "University of Manchester", url: "https://www.manchester.ac.uk/" },
+        { name: "Coventry University", url: "https://www.coventry.ac.uk/" },
+        { name: "University of Hertfordshire", url: "https://www.herts.ac.uk/" },
+        { name: "BPP University", url: "https://www.bpp.com/" }
+      ],
       processingTime: "Standard: 3 weeks. Priority visa path: 5 working days.",
       documents: ["Confirmation of Acceptance for Studies (CAS)", "TB Test Clearance Certificate", "28-Day Bank Statement proof", "Immigration Health Surcharge (IHS) payment"],
       scholarships: ["Chevening Scholarships", "Great Scholarships", "Commonwealth Master's Scholarships"]
@@ -88,10 +135,20 @@ export default function StudyAbroadPage() {
     "new-zealand": {
       name: "New Zealand",
       flag: "🇳🇿",
+      flagCode: "nz",
       eligibility: "60% overall academic marks. IELTS: 6.0 overall (no band less than 5.5) or PTE score of 50+.",
       fees: "$22,000 - $38,000 NZD per year.",
       living: "$20,000 NZD per year (Mandatory living cost proof).",
-      universities: ["University of Auckland", "University of Otago", "University of Canterbury", "Massey University", "Auckland University of Technology (AUT)"],
+      intakes: "February, July",
+      postStudyWork: "Up to 3 years Post-Study Work Visa",
+      popularCourses: "Agriculture, Information Technology, Hospitality, Environmental Science",
+      universities: [
+        { name: "University of Auckland", url: "https://www.auckland.ac.nz/" },
+        { name: "University of Otago", url: "https://www.otago.ac.nz/" },
+        { name: "University of Canterbury", url: "https://www.canterbury.ac.nz/" },
+        { name: "Massey University", url: "https://www.massey.ac.nz/" },
+        { name: "Auckland University of Technology (AUT)", url: "https://www.aut.ac.nz/" }
+      ],
       processingTime: "4 to 8 weeks.",
       documents: ["Offer of Place letter", "Tuition Fee Payment Receipt", "Evidence of Funds (FTS account optional)", "Medical certificate and chest X-ray", "Police Clearance"],
       scholarships: ["New Zealand Excellence Awards (NZEA)", "Tongarewa Scholarship", "Vice-Chancellor's International Student Scholarships"]
@@ -99,10 +156,20 @@ export default function StudyAbroadPage() {
     germany: {
       name: "Germany",
       flag: "🇩🇪",
+      flagCode: "de",
       eligibility: "70% overall academic score. Requires APS certificate verification. English programs require IELTS: 6.0+. German programs require TestDaF B2/C1.",
       fees: "€0 (Public Universities) or €10,000 - €20,000 EUR per year (Private).",
       living: "€11,904 EUR per year (Blocked account deposit).",
-      universities: ["Technical University of Munich (TUM)", "LMU Munich", "Heidelberg University", "TU Berlin", "SRH Berlin University of Applied Sciences"],
+      intakes: "Winter (September/October), Summer (March/April)",
+      postStudyWork: "18 months job-seeking visa after graduation",
+      popularCourses: "Automotive Engineering, Mechanical Engineering, Data Analytics, Medicine",
+      universities: [
+        { name: "Technical University of Munich (TUM)", url: "https://www.tum.de/" },
+        { name: "LMU Munich", url: "https://www.lmu.de/" },
+        { name: "Heidelberg University", url: "https://www.uni-heidelberg.de/" },
+        { name: "TU Berlin", url: "https://www.tu.berlin/" },
+        { name: "SRH Berlin University of Applied Sciences", url: "https://www.srh-berlin.de/" }
+      ],
       processingTime: "8 to 12 weeks.",
       documents: ["APS Certificate (Mandatory)", "University Admission Letter", "Blocked Account Funding Confirmation", "German Public Health Insurance", "SOP & Curriculam Vitae"],
       scholarships: ["DAAD Scholarship Database Programs", "Deutschlandstipendium (National Scholarship Program)"]
@@ -110,10 +177,20 @@ export default function StudyAbroadPage() {
     russia: {
       name: "Russia",
       flag: "🇷🇺",
+      flagCode: "ru",
       eligibility: "50% academic marks in 12th standard. No IELTS/PTE required. Entrance tests done directly by medical or polytechnic schools.",
       fees: "$2,000 - $8,000 USD per year (High-quality medical & aeronautical studies).",
       living: "$2,400 - $3,600 USD per year.",
-      universities: ["Moscow State University", "Saint Petersburg State University", "Novosibirsk State University", "I.M. Sechenov First Moscow State Medical University", "Kazan Federal University"],
+      intakes: "September, October",
+      postStudyWork: "Foreign students can work without special work permits during studies",
+      popularCourses: "MBBS (Medicine), Aviation & Aerospace, Engineering, IT",
+      universities: [
+        { name: "Moscow State University", url: "https://www.msu.ru/en/" },
+        { name: "Saint Petersburg State University", url: "https://english.spbu.ru/" },
+        { name: "Novosibirsk State University", url: "https://english.nsu.ru/" },
+        { name: "I.M. Sechenov First Moscow State Medical University", url: "https://sechenov.ru/eng/" },
+        { name: "Kazan Federal University", url: "https://kpfu.ru/eng" }
+      ],
       processingTime: "2 to 3 weeks.",
       documents: ["Ministry of Education Visa Invitation", "HIV Test Medical Certificate", "Passport Russian Translation (Notarized)", "High School marksheets"],
       scholarships: ["Russian Government State Scholarships (State Quota scholarships covering 100% tuition)"]
@@ -134,12 +211,16 @@ export default function StudyAbroadPage() {
   return (
     <div className="space-y-16 pb-20">
       {/* 1. Header Banner */}
-      <section className="bg-gradient-premium py-16 text-white text-center border-b border-brand-gold/15 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.1),transparent_70%)]" />
+      <section className="bg-gradient-premium py-20 text-white text-center border-b border-brand-gold/15 relative overflow-hidden transition-all duration-500">
+        <div 
+          className="absolute inset-0 bg-center bg-cover transition-all duration-700" 
+          style={{ backgroundImage: `url(https://flagcdn.com/w1280/${currentCountry.flagCode}.png)` }}
+        />
+        <div className="absolute inset-0 bg-[#081B33]/70 backdrop-blur-sm" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-4">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-brand-gold">Global Careers</span>
-          <h1 className="text-4xl font-extrabold font-heading text-white">Study Abroad Opportunities</h1>
-          <p className="text-sm sm:text-base text-gray-300 max-w-xl mx-auto">
+          <span className="text-xs font-extrabold uppercase tracking-widest text-brand-gold bg-brand-gold/10 px-4 py-1.5 rounded-full backdrop-blur-md border border-brand-gold/30">Study in {currentCountry.name}</span>
+          <h1 className="text-4xl md:text-5xl font-extrabold font-heading text-white drop-shadow-lg">Global Careers & Education</h1>
+          <p className="text-sm sm:text-base text-gray-200 max-w-xl mx-auto drop-shadow-md">
             Choose your destination, view critical academic entry guidelines, understand blocked accounts, and apply for admissions directly.
           </p>
         </div>
@@ -223,6 +304,33 @@ export default function StudyAbroadPage() {
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{currentCountry.living}</p>
                 </div>
               </div>
+
+              <div className="border-t border-brand-blue/5 pt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Intakes */}
+                <div className="space-y-2 border-b md:border-b-0 md:border-r border-brand-blue/5 pb-4 md:pb-0 md:pr-4">
+                  <h4 className="text-sm font-bold text-brand-gold uppercase tracking-wide flex items-center space-x-2">
+                    <CalendarDays className="h-4 w-4 text-brand-gold" />
+                    <span>Intakes</span>
+                  </h4>
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{currentCountry.intakes}</p>
+                </div>
+                {/* Post Study Work */}
+                <div className="space-y-2 border-b md:border-b-0 md:border-r border-brand-blue/5 pb-4 md:pb-0 md:px-2">
+                  <h4 className="text-sm font-bold text-brand-gold uppercase tracking-wide flex items-center space-x-2">
+                    <Briefcase className="h-4 w-4 text-brand-gold" />
+                    <span>Post Study Work</span>
+                  </h4>
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{currentCountry.postStudyWork}</p>
+                </div>
+                {/* Popular Courses */}
+                <div className="space-y-2 pl-0 md:pl-2">
+                  <h4 className="text-sm font-bold text-brand-gold uppercase tracking-wide flex items-center space-x-2">
+                    <BookOpen className="h-4 w-4 text-brand-gold" />
+                    <span>Popular Courses</span>
+                  </h4>
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{currentCountry.popularCourses}</p>
+                </div>
+              </div>
             </div>
 
             {/* Documents & Scholarships Lists */}
@@ -261,21 +369,64 @@ export default function StudyAbroadPage() {
             </div>
           </div>
 
-          {/* Sidebar Top universities */}
+          {/* Sidebar Top universities & Packages */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="glass-card p-6 rounded-3xl bg-white border border-brand-blue-light/5 space-y-4">
-              <h3 className="text-lg font-bold font-heading text-brand-blue-dark border-b border-brand-blue/5 pb-3">
-                Top Universities &amp; Schools
+            <div className="glass-card p-6 rounded-3xl bg-brand-blue-dark text-white border border-brand-gold/20 shadow-xl space-y-6 overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-brand-gold/10 rounded-bl-full -z-10" />
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold font-heading text-brand-gold">
+                  {currentCountry.name} Education Package
+                </h3>
+                <p className="text-xs text-gray-400">Estimated Annual Tuition</p>
+              </div>
+              <div className="bg-white/10 rounded-2xl p-4 border border-white/5 flex items-center justify-center">
+                <span className="text-lg md:text-xl font-black text-brand-gold font-heading text-center">
+                  {currentCountry.fees}
+                </span>
+              </div>
+            </div>
+
+            <div className="glass-card p-6 sm:p-8 rounded-3xl bg-white border border-brand-blue-light/10 shadow-lg space-y-5">
+              <h3 className="text-lg font-bold font-heading text-brand-blue-dark border-b border-brand-blue/5 pb-3 flex items-center space-x-2">
+                <GraduationCap className="h-5 w-5 text-brand-gold" />
+                <span>Top Universities</span>
               </h3>
               <div className="space-y-3">
                 {currentCountry.universities.map((uni, idx) => (
-                  <div key={idx} className="p-3 bg-brand-blue/5 rounded-xl border border-brand-blue-light/5 text-xs sm:text-sm font-bold text-brand-blue-dark">
-                    {uni}
-                  </div>
+                  <a key={idx} href={uni.url} target="_blank" rel="noopener noreferrer" className="p-3.5 bg-gray-50 rounded-xl border border-gray-100 hover:border-brand-gold/50 hover:bg-brand-gold/5 hover:-translate-y-0.5 transition-all duration-300 text-xs sm:text-sm font-bold text-brand-blue-dark flex items-start space-x-3 group cursor-pointer shadow-sm hover:shadow-md">
+                    <div className="h-6 w-6 rounded-full bg-brand-blue/5 flex items-center justify-center shrink-0 group-hover:bg-brand-gold/20 transition-colors">
+                      <span className="text-[10px]">🏛️</span>
+                    </div>
+                    <span className="mt-0.5 group-hover:text-brand-gold transition-colors">{uni.name}</span>
+                  </a>
                 ))}
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Q&A Section */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="glass-card p-6 sm:p-10 rounded-3xl bg-white border border-brand-blue-light/10 shadow-xl space-y-8">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-blue-dark font-heading">Have Questions about {currentCountry.name}?</h2>
+            <p className="text-sm text-gray-500">Ask our immigration experts directly and get personalized guidance.</p>
+          </div>
+          
+          <form onSubmit={(e) => { e.preventDefault(); alert("Question submitted! Our team will contact you shortly."); }} className="space-y-4 max-w-2xl mx-auto">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-brand-blue-dark uppercase tracking-wide">Your Name</label>
+              <input type="text" required placeholder="John Doe" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold text-sm transition-colors" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-brand-blue-dark uppercase tracking-wide">Ask your Question</label>
+              <textarea rows="4" required placeholder={`e.g., What are the best PR pathways after studying in ${currentCountry.name}?`} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold text-sm transition-colors resize-none" />
+            </div>
+            <button type="submit" className="w-full py-3.5 bg-brand-blue-dark hover:bg-brand-blue text-white font-extrabold rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 text-sm uppercase tracking-wider">
+              <span>Submit Question</span>
+            </button>
+          </form>
         </div>
       </section>
 
@@ -399,5 +550,13 @@ export default function StudyAbroadPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function StudyAbroadPage() {
+  return (
+    <Suspense fallback={<div className="p-24 text-center">Loading options...</div>}>
+      <StudyAbroadContent />
+    </Suspense>
   );
 }

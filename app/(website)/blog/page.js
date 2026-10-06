@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { BookOpen, Calendar, Clock, ArrowRight, Search, FileText, ChevronRight, X } from "lucide-react";
 
 export default function BlogPage() {

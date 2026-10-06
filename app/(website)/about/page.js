@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { ShieldCheck, Compass, Target, Sparkles, Building, Landmark, Users2, Award } from "lucide-react";
 
 export default function AboutPage() {
