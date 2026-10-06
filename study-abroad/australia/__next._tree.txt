@@ -1,0 +1,8 @@
+:HL["/_next/static/chunks/01dapxdwl553d.css","style"]
+:HL["/_next/static/chunks/2k2wlfaupi22w.css","style"]
+:HL["/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["https://images.unsplash.com/photo-1569427572850-9a6bd58f3c47?q=80&w=900&auto=format&fit=crop","image"]
+:HL["https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?q=80&w=900&auto=format&fit=crop","image"]
+:HL["https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=900&auto=format&fit=crop","image"]
+0:{"tree":{"name":"","param":null,"prefetchHints":0,"slots":{"children":{"name":"(website)","param":null,"prefetchHints":16,"slots":{"children":{"name":"study-abroad","param":null,"prefetchHints":0,"slots":{"children":{"name":"country","param":{"type":"d","key":"australia","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}}}},"staleTime":300,"buildId":"I6NIoSkjeujtwvHTdRfER"}
