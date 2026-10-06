@@ -1,15 +1,9 @@
 import { NextResponse } from 'next/server';
-import { openDb } from '@/lib/db';
+
+export const dynamic = 'force-static';
 
 export async function GET() {
-  try {
-    const db = await openDb();
-    const leads = await db.all('SELECT * FROM leads ORDER BY date DESC');
-    return NextResponse.json({ success: true, leads });
-  } catch (error) {
-    console.error('Error fetching leads:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch leads' }, { status: 500 });
-  }
+  return NextResponse.json({ success: true, leads: [] });
 }
 
 export async function POST(request) {
